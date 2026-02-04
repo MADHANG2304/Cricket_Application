@@ -2,9 +2,11 @@ import java.util.ArrayList;
 
 public class AddTeam {
 
+    static Tournament tournament;
     private ArrayList<Team> teams;
 
-    public AddTeam() {
+    public AddTeam(Tournament tournament) {
+        this.tournament = tournament;
         teams = new ArrayList<>();
     }
 
@@ -14,7 +16,8 @@ public class AddTeam {
         return team;
     }
 
-    public boolean addStadium(Team team , ArrayList<Stadium> stadiums){
+    public boolean addStadium(Team team ){
+        ArrayList<Stadium> stadiums = tournament.getAllStadiums();
         for(Stadium stadium : stadiums){
             if(stadium.getHomeTeamName().equals(team.getTeamName())){
                 team.setStadium(stadium);

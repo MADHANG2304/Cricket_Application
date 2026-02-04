@@ -44,6 +44,17 @@ public class Match {
         }
     }
 
+    public int getPlayerScore(Player player){
+        return playerScore.get(player);
+    }
+
+    public Team getTeam1() {
+        return team1;
+    }
+    public Team getTeam2() {
+        return team2;
+    }
+
     public Team getWinner(){
         return  winner;
     }

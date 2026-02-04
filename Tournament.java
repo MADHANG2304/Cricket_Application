@@ -13,7 +13,6 @@ public class Tournament {
         teams = new ArrayList<>();
         matches = new ArrayList<>();
         stadiums = new ArrayList<>();
-        createStadium();
     }
 
     public Match addMatch(Team team1 , Team team2){
@@ -23,19 +22,6 @@ public class Tournament {
         return match;
     } 
 
-    public void createStadium(){
-        Stadium stadium = new Stadium("Chepauk", "Chennai", 40000, "CSK");
-        stadiums.add(stadium);
-        stadium = new Stadium("Wankede", "Mumbai", 40000, "MI");
-        stadiums.add(stadium);
-        stadium = new Stadium("Chinnaswamy", "Bangalore", 30000, "RCB");
-        stadiums.add(stadium);
-        stadium = new Stadium("Narendra Modi Stadium", "Ahamadabad", 60000, "GT");
-        stadiums.add(stadium);
-        stadium = new Stadium("Arun Jetli", "Delhi", 25000, "DC");
-        stadiums.add(stadium);
-    }
-
     public void getTeamPlayers(Team team){
         ArrayList<Player> players = team.getPlayers();
         System.out.println(team.getTeamName() + " Players :");
@@ -44,8 +30,24 @@ public class Tournament {
         }
     }
 
+    public void addTeams(Team team){
+        teams.add(team);
+    }
+
+    public  ArrayList<Team> getAllTeams(){
+        return teams;
+    }
+
+    public void addStadium(Stadium stadium){
+        stadiums.add(stadium);
+    }
+
     public ArrayList<Stadium> getAllStadiums(){
         return stadiums;
+    }
+
+    public MatchSchedule createMatchSchedule(){
+        return new MatchSchedule(teams);
     }
 
     public void displayPointsTable(){
