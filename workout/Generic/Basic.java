@@ -23,6 +23,7 @@ public class Basic<K, V> implements Interface<K, V>{
         return value;
     }
 
+
     public static void main(String[] args){
         Basic<String , Integer> b = new Basic<>("Madhan" , 101);
         

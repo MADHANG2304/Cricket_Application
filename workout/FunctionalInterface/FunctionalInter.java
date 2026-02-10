@@ -6,7 +6,7 @@ public interface FunctionalInter {
 
     int add(int a , int b);
 
-    // String name(String x);
+    // String name(String x); // Should contains only one abstract method.
 
     default void print1(){
         System.out.println("default functional interface method");
