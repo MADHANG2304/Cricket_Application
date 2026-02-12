@@ -1,3 +1,4 @@
+package functionalInterface;
 public class Implementation{
     public static void main(String[] args) {
         FunctionalInter s = (a , b) -> (a + b);

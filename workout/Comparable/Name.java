@@ -1,4 +1,4 @@
-package Comparable;
+package comparable;
 
 public class Name implements Comparable<Name>{
     private String firstName;

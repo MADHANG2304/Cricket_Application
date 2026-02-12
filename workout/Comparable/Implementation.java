@@ -1,4 +1,4 @@
-package Comparable;
+package comparable;
 
 import java.util.*;
 

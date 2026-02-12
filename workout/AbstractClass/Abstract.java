@@ -1,3 +1,5 @@
+package abstractClass;
+
 public class Abstract extends Demo1{
     static int i = 20;
     void print(){

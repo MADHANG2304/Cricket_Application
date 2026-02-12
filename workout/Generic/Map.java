@@ -1,4 +1,4 @@
-package Generic;
+package generic;
 import java.util.*;
 
 public class Map<K , V> implements MapInterface<K, V>{

@@ -1,3 +1,5 @@
+package abstractClass;
+
 abstract class Demo{
     int i = 10;
 

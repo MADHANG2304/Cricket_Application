@@ -1,4 +1,4 @@
-package Enum;
+package enumClass;
 
 public class Order {
     enum OrderStatus{

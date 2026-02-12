@@ -1,3 +1,4 @@
+package functionalInterface;
 @FunctionalInterface
 public interface FunctionalInter {
 

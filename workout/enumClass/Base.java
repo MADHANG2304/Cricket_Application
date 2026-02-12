@@ -1,6 +1,6 @@
-package Enum;
+package enumClass;
 
-import Enum.Order.OrderStatus;
+import enumClass.Order.OrderStatus;
 
 public class Base {
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package Generic;
+package generic;
 
 public class Basic<K, V> implements Interface<K, V>{
     private K key;

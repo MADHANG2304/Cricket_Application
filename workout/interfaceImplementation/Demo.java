@@ -1,3 +1,4 @@
+package interfaceImplementation;
 interface Demo {
     int i = 10;
     void print();

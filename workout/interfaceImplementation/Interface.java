@@ -1,3 +1,4 @@
+package interfaceImplementation;
 abstract class Abstract implements Demo{
     // This class was not forced to implement interface methods.
 } 
