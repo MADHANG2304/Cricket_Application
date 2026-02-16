@@ -16,7 +16,7 @@ public class Checked {
         System.out.println("Path: " + (path));
 
         // FileReader file = new FileReader(path); // error: unreported exception
-        // FileNotFoundException; must be caught or declared to be thrown
+        // FileNotFoundException must be caught or declared to be thrown
 
         // BufferedReader br = new BufferedReader(file);
 

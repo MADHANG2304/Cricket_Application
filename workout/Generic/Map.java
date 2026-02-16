@@ -24,6 +24,8 @@ public class Map<K , V> implements MapInterface<K, V>{
         m.set(1, "Madhan");
         m.set(2, "Rahul");
         m.set(3, "Kishore");
+
+        // m.set("Madhan" , 1); // Type mismatch for <Integer, String>  
         
         System.out.println(m.getValue(1));
 

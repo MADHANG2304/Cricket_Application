@@ -16,5 +16,6 @@ abstract class Demo{
     static void prints()
     {
         // Create static method inside the body
+        System.out.println("Static method of parent");
     }
 } 

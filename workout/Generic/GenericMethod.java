@@ -24,7 +24,7 @@ public class GenericMethod<T> {
         //     if(i > ele){
         //         count++;
         //     }
-        // } // This will not work because > operator is used  only for primitive data types
+        // } // This will not work because > operator is used only for primitive data types
 
         // for(T i : arr){
         //     if(i.compareTo(ele) > 0){

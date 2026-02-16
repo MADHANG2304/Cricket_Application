@@ -36,5 +36,8 @@ public final class User {
         u.display();
 
         System.out.println("Currret Roles after insertion: " + roles);
+
+        // u.roles;
+        // System.out.println("Object Roles after insertion: " + u.getRoles());
     }
 }

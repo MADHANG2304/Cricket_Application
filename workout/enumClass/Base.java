@@ -26,7 +26,7 @@ public class Base {
 
         System.out.println("\nAll Order Status:");
         for(OrderStatus i : OrderStatus.values()){
-            System.out.println("Status Type: " + status + " Status Code: " + status.getStatus() + " Ordinal(): " + status.ordinal());
+            System.out.println("Status Type: " + i + " Status Code: " + i.getStatus() + " Ordinal(): " + i.ordinal());
         }
 
         OrderStatus status2 = OrderStatus.DELIVERED;

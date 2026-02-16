@@ -25,5 +25,11 @@ public class Abstract extends Demo1{
         a.print(); // Output : Extended Method
         
         a.print("Hello......"); // Output : Exteneded Method with String Hello
+
+        d.prints(); // Calls parent method prints but using object
+
+        Demo1.prints(); // Calls parent method prints
+        
+        Demo.prints(); // Calls parent method prints
     }
 }

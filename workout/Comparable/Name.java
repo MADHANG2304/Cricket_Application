@@ -11,9 +11,9 @@ public class Name implements Comparable<Name>{
 
     public int compareTo(Name currName){
         int res = lastName.compareTo(currName.lastName);
-        System.out.println(lastName + " " + currName.lastName);
-        System.out.println(lastName + " " + currName.lastName + " => " + res);
-        System.out.println(firstName + " " + currName.firstName + " FirstName => " + (firstName.compareTo(currName.firstName)));
+        // System.out.println(lastName + " " + currName.lastName);
+        // System.out.println(lastName + " " + currName.lastName + " => " + res);
+        // System.out.println(firstName + " " + currName.firstName + " FirstName => " + (firstName.compareTo(currName.firstName)));
         return (res != 0 ? res : firstName.compareTo(currName.firstName));
     }
 

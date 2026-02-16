@@ -14,7 +14,7 @@ public class Implementation {
         List<Name> list = Arrays.asList(nameArray); 
         Collections.sort(list);
         
-        System.out.println("Equals of: "  +  list.get(0).equals(list.get(1)));
+        System.out.println("Equals of " + list.get(0) + " and " +  list.get(1) + " is " +  list.get(0).equals(list.get(1)));
 
         System.out.println("All List Names");
         for(Name i : list){

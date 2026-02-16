@@ -3,7 +3,8 @@ public class Nested {
     public static void main(String[] args) {
         try {
             int[] a = new int[3]; // This execute first, once the exception occurs then the nested try-catch will not execute.
-            a[5] = 10;
+            // a[5] = 10 / 0; // Arithmetic exception occurs because java checks form right to left 
+            a[5] = 10; // ArrayIndexOutOfBound error occurs
             try {
                 int ans = 10 / 0;
             } catch (ArithmeticException e) {
