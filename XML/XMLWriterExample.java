@@ -1,8 +1,11 @@
 import java.io.FileWriter;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class XMLWriterExample {
     private static StringBuilder xml = new StringBuilder();
@@ -14,20 +17,38 @@ public class XMLWriterExample {
         for (Field f : fields) {
             f.setAccessible(true);
 
-            Object value = f.get(o);
-
-            createStartTag(f.getName(), xml);
+            Object value = getValue(f,  o);
+            openTag(f.getName(), xml);
             xml.append(value);
-            createEndTag(f.getName(), xml);
+            closeTag(f.getName(), xml);
         }
     }
-
-    public static void createStartTag(String name, StringBuilder xml) {
+    
+    public static void openTag(String name, StringBuilder xml) {
         xml.append("<").append(name).append(">");
     }
 
-    public static void createEndTag(String name, StringBuilder xml) {
+    public static void closeTag(String name, StringBuilder xml) {
         xml.append("</").append(name).append(">");
+    }
+    
+    public static Object getValue(Field f , Object o) throws IllegalAccessException, InvocationTargetException {
+        
+        Object value = null;
+        Annotation[] currAnn = f.getDeclaredAnnotations();
+        Method[] methods = o.getClass().getDeclaredMethods();
+
+        for (Annotation a : currAnn) {
+            Class<? extends Annotation> fieldAnnType = a.annotationType();
+            for (Method m : methods) {
+                Annotation methodAnn = m.getAnnotation(fieldAnnType);
+                
+                if (methodAnn != null && a.equals(methodAnn)) {
+                    value = m.invoke(o);
+                }
+            }
+        }
+        return value;
     }
 
     public static void convertToXML(Object o) throws Exception {
@@ -42,67 +63,45 @@ public class XMLWriterExample {
         xml.append("<").append(root).append(">");
 
         Field[] field = cls.getDeclaredFields();
-        Method[] methods = cls.getDeclaredMethods();
-
+        
         for (Field f : field) {
             f.setAccessible(true);
 
             Class<?> type = f.getType();
             Object value = f.get(o);
 
-            // boolean isPrivate = Modifier.isPrivate(f.getModifiers());
-
             // For list :-
             if (List.class.isAssignableFrom(type)) {
                 List<?> list = (List<?>) value;
 
                 if (list != null && !list.isEmpty()) {
-                    createStartTag(f.getName(), xml);
-
-                    // Method[] methods = cls.getDeclaredMethods();
-                    // for(Method m : methods){
-                    // if(m.getName().startsWith("get")){
-                    // Object val = m.invoke(o);
-                    // System.out.println("Method name: " + m.getName() + " Value: " + val);
-                    // }
-                    // }
+                    openTag(f.getName(), xml);
 
                     for (Object item : list) {
-                        createStartTag(item.getClass().getSimpleName(), xml);
+                        openTag(item.getClass().getSimpleName(), xml);
                         convertFieldsToXML(item);
-                        createEndTag(item.getClass().getSimpleName(), xml);
+                        closeTag(item.getClass().getSimpleName(), xml);
                     }
 
-                    createEndTag(f.getName(), xml);
+                    closeTag(f.getName(), xml);
                 }
             }
 
             // For normal type :-
             else if (isNormal(type)) {
+                Object currValue = getValue(f, o);
 
-                // Annotation[] currAnn = f.getDeclaredAnnotations();
-                // for(Annotation a : currAnn){
-                //     Class<?> fieldAnnType = a.annotationType();
-                //     for(Method m : methods){
-                //         Annotation methodAnn = m.getAnnotation((Class<Annotation>) fieldAnnType);
-                //         if(methodAnn != null && a.equals(methodAnn)){
-                //             Object currValue = m.invoke(o);
-                //             System.out.println(currValue);
-                //         }
-                //     }
-                // }
-
-                createStartTag(f.getName(), xml);
-                xml.append(value);
-                createEndTag(f.getName(), xml);
+                openTag(f.getName(), xml);
+                xml.append(currValue);
+                closeTag(f.getName(), xml);
             }
 
             // For nested objects :-
             else if (value != null) {
-                createStartTag(f.getName(), xml);
+                openTag(f.getName(), xml);
                 // convertToXML(value); // Same Class name tag repeats
                 convertFieldsToXML(value);
-                createEndTag(f.getName(), xml);
+                closeTag(f.getName(), xml);
             }
         }
 

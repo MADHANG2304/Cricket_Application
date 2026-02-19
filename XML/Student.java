@@ -1,20 +1,15 @@
-import annotations.StudentAge;
-import annotations.StudentDept;
-import annotations.StudentName;
+import annotations.StudentAnnotation;
 import java.util.List;
 
 public class Student {
 
-    @StudentName
-    private String name;
+    @StudentAnnotation(StudentAnnotation.Type.NAME) String name;
+    
+    @StudentAnnotation(StudentAnnotation.Type.AGE) int age;
+    
+    @StudentAnnotation(StudentAnnotation.Type.DEPARTMENT) String dept;
 
-    @StudentAge
-    private int age;
-
-    @StudentDept
-    private String dept;
-
-    private List<Subject> subjects;
+    public List<Subject> subjects;
 
     public Address address;
 
@@ -56,17 +51,18 @@ public class Student {
         this.subjects = subjects;
     }
 
-    @StudentName
+
+    @StudentAnnotation(StudentAnnotation.Type.NAME)
     public String getName(){
         return name;
     }
-
-    @StudentAge
+    
+    @StudentAnnotation(StudentAnnotation.Type.AGE)
     public int getAge(){
         return age;
     }
-
-    @StudentDept
+    
+    @StudentAnnotation(StudentAnnotation.Type.DEPARTMENT)
     public String getDept(){
         return dept;
     }

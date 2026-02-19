@@ -7,6 +7,14 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD , ElementType.METHOD})
-public @interface StudentDept {
-    
+
+
+public @interface StudentAnnotation {
+    Type value();
+
+    public enum Type {
+        NAME,
+        AGE,
+        DEPARTMENT
+    }
 }

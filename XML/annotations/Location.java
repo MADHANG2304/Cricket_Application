@@ -7,6 +7,13 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD , ElementType.METHOD})
-public @interface StudentName {
-    
+
+public @interface Location {
+    Type value();
+
+    public enum Type {
+        CITY,
+        STATE,
+        COUNTRY
+    }
 }
