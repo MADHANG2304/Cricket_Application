@@ -3,10 +3,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
 public class ObjectWriter {
+    static int count = 0;
 
     public static Object parseToObject(String path, Class<?> rootClass) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(path));
@@ -22,77 +24,96 @@ public class ObjectWriter {
 
         while ((line = br.readLine()) != null) {
             line = line.trim();
-
             if (line.isEmpty() || line.startsWith("<?")) {
                 continue;
             }
 
-            if (line.startsWith("<") && !line.startsWith("</")) {
+            if (line.startsWith("<") && !line.startsWith("</") && !line.contains("</")) {
                 String tag = line.substring(1, line.indexOf(">"));
+
                 tagStack.push(tag);
 
                 Object parent = objStack.peek();
 
                 Field field = getField(parent, tag);
+
                 if (field != null) {
-                    // System.out.println("Field: " + field.getName());
+
                     field.setAccessible(true);
+
                     Class<?> type = field.getType();
 
-                    if (isNormal(type)) {
+                    if (List.class.isAssignableFrom(type)) {
                         continue;
                     }
 
-                    else if (List.class.isAssignableFrom(type)) {
-                        ParameterizedType pType = (ParameterizedType) field.getGenericType();
-
-                        Class<?> listClass = (Class<?>) pType.getActualTypeArguments()[0];
-
-                        Object child = listClass.getDeclaredConstructor().newInstance();
-                        objStack.push(child);
-                    }
-
-                    else {
+                    if (!isNormal(type)) {
                         Object child = type.getDeclaredConstructor().newInstance();
                         objStack.push(child);
                     }
                 }
-                // else{
-                // for(Field f : parent.getClass().getDeclaredFields()){
-                // System.out.println("Tag & field: " + tag + ", " + f.getName());
-                // if(tag.equals(f.getName())){
-                // System.out.println("Field Name: " + f.getName());
-                // }
-                // }
-                // }
-                // for (Object i : objStack) {
-                // System.out.println(i.getClass());
-                // }
+
+                else {
+                    for (Field f : parent.getClass().getDeclaredFields()) {
+                        if (List.class.isAssignableFrom(f.getType())) {
+                            ParameterizedType pType = (ParameterizedType) f.getGenericType();
+                            Class<?> listType = (Class<?>) pType.getActualTypeArguments()[0];
+
+                            if (listType.getSimpleName().equalsIgnoreCase(tag)) {
+                                Object child = listType.getDeclaredConstructor().newInstance();
+                                objStack.push(child);
+                                break;
+                            }
+                        }
+                    }
+                }
             }
 
             else if (line.startsWith("</")) {
-                String tag = tagStack.pop();
+                String tag = line.substring(2, line.indexOf(">"));
+
+                tagStack.pop();
 
                 if (objStack.size() > 1) {
-                    Object child = objStack.pop();
-                    Object parent = objStack.peek();
-                    // System.out.println("Child : " + child.getClass() + " Parent: " + parent.getClass() + " Tag: " + tag);
+                    Object child = objStack.peek();
+                    Object parent = objStack.get(objStack.size() - 2);
 
-                    Field field = getField(child, tag);
-                    // System.out.println("Field : " + field.getName());
+                    if (child.getClass().getSimpleName().equalsIgnoreCase(tag)) {
 
-                    if (field != null) {
-                        // System.out.println("Close Field : " + field.getName());
-                        field.setAccessible(true);
+                        objStack.pop();
 
-                        // System.out.println("Type: " + field.getType());
-                        if (List.class.isAssignableFrom(field.getType())) {
-                            // System.out.println("Type: " + field.getType());
-                        } else {
-                            field.set(child, field.get(child));
-                            // System.out.println("Value: " + field.get(child));
-                            // field.set(parent , child);
+                        Field field = getField(parent, tag);
+
+                        if (field != null && !List.class.isAssignableFrom(field.getType())) {
+                            field.setAccessible(true);
+                            field.set(parent, child);
                         }
+
+                        else {
+
+                            for (Field f : parent.getClass().getDeclaredFields()) {
+                                if (List.class.isAssignableFrom(f.getType())) {
+                                    ParameterizedType pType = (ParameterizedType) f.getGenericType();
+                                    Class<?> listType = (Class<?>) pType.getActualTypeArguments()[0];
+
+                                    if (listType.getSimpleName().equalsIgnoreCase(tag)) {
+                                        f.setAccessible(true);
+
+                                        @SuppressWarnings("unchecked")
+                                        List<Object> list = (List<Object>) f.get(parent);
+
+                                        if (list == null) {
+                                            list = new ArrayList<>();
+                                            f.set(parent, list);
+                                        }
+
+                                        list.add(child);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
                     }
                 }
             }
@@ -103,27 +124,22 @@ public class ObjectWriter {
                 String tag = tagStack.peek();
 
                 Object curr = objStack.peek();
-                // System.out.println("Tag & curr: " + curr + " " + tag);
+
                 Field field = getField(curr, tag);
+
                 if (field != null) {
                     field.setAccessible(true);
-                    // System.out.println("Field Content Name: " + field.getName());
                     setValue(field, curr, content);
                 }
             }
-
-            // for(Object i : objStack){
-            // System.out.println(i.getClass());
-            // }
         }
 
+        br.close();
         return rootObject;
     }
 
     public static boolean isNormal(Class<?> type) {
-        return (type.isPrimitive()
-                || type == String.class
-                || Number.class.isAssignableFrom(type));
+        return (type.isPrimitive() || type == String.class || Number.class.isAssignableFrom(type));
     }
 
     public static Field getField(Object parent, String tag) {
@@ -144,31 +160,24 @@ public class ObjectWriter {
             f.set(o, content);
         }
 
-        // System.out.println("Value is: " + f.get(o));
     }
 
     public static void main(String[] args) throws Exception {
-        // Student s = (Student) parseToObject(
-        // "output.xml",
-        // Student.class);
-
-        Student s = (Student) parseToObject(
-                "output.xml",
-                Student.class);
+        Student s = (Student) parseToObject("output.xml", Student.class);
 
         System.out.println("Name: " + s.getName());
         System.out.println("Age: " + s.getAge());
         System.out.println("Dept: " + s.getDept());
 
-        System.out.println(s.subjects == null);
-        System.out.println(s.address == null);
-
-        // for (Subject sub : s.subjects) {
-        // System.out.println(
-        // sub.subjectName + " - " + sub.mark);
-        // }
-
-        // System.out.println(
-        // "City: " + s.address.city);
+        System.out.println("\nCity: " + s.address.city);
+        System.out.println("State: " + s.address.state);
+        System.out.println("Country: " + s.address.country);
+        
+        for (Subject sub : s.subjects) {
+            System.out.println("\nSubject Name: " + sub.getSubjectName());
+            System.out.println("Staff Name: " + sub.getStaffName());
+            System.out.println("Marks: " + sub.getMarks());
+            System.out.println("Grade: " + sub.getGrade());
+        }
     }
 }

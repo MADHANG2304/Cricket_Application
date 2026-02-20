@@ -10,7 +10,7 @@ import java.util.List;
 public class XMLWriterExample {
     private static StringBuilder xml = new StringBuilder();
 
-    public static void convertFieldsToXML(Object o) throws Exception {
+    public static void convertFieldsToXML(Object o, int indent) throws Exception {
         Class<?> cls = o.getClass();
         Field[] fields = cls.getDeclaredFields();
 
@@ -18,8 +18,17 @@ public class XMLWriterExample {
             f.setAccessible(true);
 
             Object value = getValue(f,  o);
+
+            xml.append("\n");
+            appendIndent(indent);
             openTag(f.getName(), xml);
+
+            xml.append("\n");
+            appendIndent(indent + 1);
             xml.append(value);
+            
+            xml.append("\n");
+            appendIndent(indent);
             closeTag(f.getName(), xml);
         }
     }
@@ -32,6 +41,10 @@ public class XMLWriterExample {
         xml.append("</").append(name).append(">");
     }
     
+    private static void appendIndent(int indent) {
+        xml.append("    ".repeat(indent));
+    }
+
     public static Object getValue(Field f , Object o) throws IllegalAccessException, InvocationTargetException {
         
         Object value = null;
@@ -60,7 +73,7 @@ public class XMLWriterExample {
             xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         }
 
-        xml.append("<").append(root).append(">");
+        xml.append("\n<").append(root).append(">");
 
         Field[] field = cls.getDeclaredFields();
         
@@ -75,14 +88,24 @@ public class XMLWriterExample {
                 List<?> list = (List<?>) value;
 
                 if (list != null && !list.isEmpty()) {
+                    xml.append("\n");
+                    appendIndent(1);
                     openTag(f.getName(), xml);
 
                     for (Object item : list) {
+                        xml.append("\n");
+                        appendIndent(2);
                         openTag(item.getClass().getSimpleName(), xml);
-                        convertFieldsToXML(item);
+                        
+                        convertFieldsToXML(item , 3);
+                        
+                        xml.append("\n");
+                        appendIndent(2);
                         closeTag(item.getClass().getSimpleName(), xml);
                     }
-
+                   
+                    xml.append("\n");
+                    appendIndent(1);
                     closeTag(f.getName(), xml);
                 }
             }
@@ -90,24 +113,37 @@ public class XMLWriterExample {
             // For normal type :-
             else if (isNormal(type)) {
                 Object currValue = getValue(f, o);
-
+                
+                xml.append("\n");
+                appendIndent(1);
                 openTag(f.getName(), xml);
+                
+                xml.append("\n");
+                appendIndent(2);
                 xml.append(currValue);
+                
+                xml.append("\n");
+                appendIndent(1);
                 closeTag(f.getName(), xml);
             }
-
+            
             // For nested objects :-
             else if (value != null) {
+                xml.append("\n");
+                appendIndent(1);
                 openTag(f.getName(), xml);
-                // convertToXML(value); // Same Class name tag repeats
-                convertFieldsToXML(value);
+                
+                convertFieldsToXML(value, 2);
+
+                xml.append("\n");
+                appendIndent(1);
                 closeTag(f.getName(), xml);
             }
         }
-
+        xml.append("\n");
         xml.append("</").append(root).append(">");
 
-        try (FileWriter fileWriter = new FileWriter("output.xml")) {
+        try (FileWriter fileWriter = new FileWriter("outputs.xml")) {
             fileWriter.write(xml.toString());
             System.out.println("XML file created successfully");
         }

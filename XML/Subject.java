@@ -2,12 +2,14 @@ import annotations.SubjectAnnotation;
 
 public class Subject {
 
-    @SubjectAnnotation(SubjectAnnotation.Type.SUBJECTNAME) String subjectName;
+    @SubjectAnnotation(SubjectAnnotation.Type.SUBJECTNAME)
+    String subjectName;
     
     @SubjectAnnotation(SubjectAnnotation.Type.STAFFNAME)
     private String staffName;
     
-    @SubjectAnnotation(SubjectAnnotation.Type.MARKS) int mark;
+    @SubjectAnnotation(SubjectAnnotation.Type.MARKS) 
+    int mark;
     
     @SubjectAnnotation(SubjectAnnotation.Type.GRADE)
     private String grade;

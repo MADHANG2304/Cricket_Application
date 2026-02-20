@@ -4,11 +4,9 @@ public class Address{
 
         @Location(Location.Type.CITY) String city;
         
-        @Location(Location.Type.STATE)
-        private String state;
+        @Location(Location.Type.STATE) String state;
         
-        @Location(Location.Type.COUNTRY)
-        private String country;
+        @Location(Location.Type.COUNTRY) String country;
 
         public Address(String city , String state , String country){
             this.city = city;
